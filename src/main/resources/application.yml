@@ -1,0 +1,102 @@
+spring:
+    profiles:
+        active: local
+---
+spring:
+    profiles: local
+    application:
+        name: '@project.name@'
+info:
+    app:
+        artifactId: '@project.artifactId@'
+        description: '@project.description@'
+        groupId: '@project.groupId@'
+        name: '@project.name@'
+        version: '@project.version@'
+server:
+    host: localhost
+    port: 9090
+eureka:
+    client:
+        enabled: true
+        serviceUrl:
+            defaultZone: http://${server.host}:8761/eureka/
+    instance:
+        prefer-ip-address: true
+        healthCheckUrl: http://${server.host}:${server.port}/actuator/health
+        homePageUrl: http://${server.host}:${server.port}/
+        instance-id: ${spring.application.name}:${server.port}
+        leaseExpirationDurationInSeconds: 300
+        leaseRenewalIntervalInSeconds: 300
+        statusPageUrl: http://${server.host}:${server.port}/actuator/info
+    environment: dev
+management:
+    endpoint:
+        health:
+            show-details: always
+        shutdown:
+            enabled: true
+    endpoints:
+        web:
+            exposure:
+                include: '*'
+    health:
+        db:
+            enabled: true
+        defaults:
+            enabled: true
+        diskspace:
+            enabled: true
+    metrics:
+        web:
+            server:
+                auto-time-requests: false
+
+---
+spring:
+    profiles: k8s
+    application:
+        name: '@project.name@'
+info:
+    app:
+        artifactId: '@project.artifactId@'
+        description: '@project.description@'
+        groupId: '@project.groupId@'
+        name: '@project.name@'
+        version: '@project.version@'
+server:
+    port: 10002
+eureka:
+    client:
+        enabled: true
+        serviceUrl:
+            defaultZone: http://eureka-server:10001/eureka/
+    instance:
+        prefer-ip-address: true
+        healthCheckUrl: http://${spring.application.name}:${server.port}/actuator/health
+        homePageUrl: http://${spring.application.name}:${server.port}/
+        instance-id: ${spring.application.name}:${server.port}
+        leaseExpirationDurationInSeconds: 300
+        leaseRenewalIntervalInSeconds: 300
+        statusPageUrl: http://${spring.application.name}:${server.port}/actuator/info
+management:
+    endpoint:
+        health:
+            show-details: always
+        shutdown:
+            enabled: true
+    endpoints:
+        web:
+            exposure:
+                include: '*'
+    health:
+        db:
+            enabled: true
+        defaults:
+            enabled: true
+        diskspace:
+            enabled: true
+    metrics:
+        web:
+            server:
+                auto-time-requests: false
