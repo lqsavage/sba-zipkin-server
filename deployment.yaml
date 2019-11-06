@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zipkin-server
+  namespace: sba
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zipkin-server
+  template:
+    metadata:
+      labels:
+        app: zipkin-server
+    spec:
+      containers:
+        - name: sit-bmw-model
+          image: registry.cn-hangzhou.aliyuncs.com/dev_savage/sba-zipkin:{version}
+          ports:
+            - name: http-port
+              containerPort: 10002
+          env:
+            - name: spring_profiles_active
+              value: k8s
+      imagePullSecrets:
+        - name: sbasecret
